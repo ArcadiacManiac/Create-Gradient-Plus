@@ -50,7 +50,7 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 			float topYValue = *topY;
 
 			CCPoint gradientPosition = ccp((leftXValue + rightXValue) * 0.5f, topYValue + 60.0f);
-			CCPoint snappedGradientPosition = m_transformControl->snapToGrid(gradientPosition, true);
+			CCPoint snappedGradientPosition = ccp(std::floor(gradientPosition.x / 30.0f) * 30.0f + 15.0f, std::floor(gradientPosition.y / 30.0f) * 30.0f + 15.0f);
 			
 
 			// Create the gradient trigger
