@@ -70,6 +70,15 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 			this->updateButtons();
 			this->updateObjectInfoLabel();
 		}
+		else if (selected->count() > 3)
+		{
+			// Get a list of the selected objects in the order that they were placed
+			std::unordered_set<GameObject*> selectedObjects;
+			// Use Delauney Triangulation to seperate the shape into triangles
+
+
+			// Create a gradient for each triangle
+		}
 		else
 		{
 			EditorUI::createGradientFromSelection();
