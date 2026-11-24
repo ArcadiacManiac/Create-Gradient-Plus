@@ -18,16 +18,16 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 
 			// Assign new group IDs to the objects and keep them in an unordered_set
 			std::unordered_set<int> gradientGroups;
-			int groupID1 = m_editorLayer->getNextFreeGroupID(gradientGroups);
+			int groupID1 = nextGroupID(m_editorLayer, gradientGroups);
 			gradientGroups.insert(groupID1);
-			int groupID2 = m_editorLayer->getNextFreeGroupID(gradientGroups);
+			int groupID2 = nextGroupID(m_editorLayer, gradientGroups);
 			gradientGroups.insert(groupID2);
-			int groupID3 = m_editorLayer->getNextFreeGroupID(gradientGroups);
+			int groupID3 = nextGroupID(m_editorLayer, gradientGroups);
 			gradientGroups.insert(groupID3);
 
-			m_editorLayer->addObjectToGroup(obj1, groupID1);
-			m_editorLayer->addObjectToGroup(obj2, groupID2);
-			m_editorLayer->addObjectToGroup(obj3, groupID3);
+			addToGroup(m_editorLayer, obj1, groupID1);
+			addToGroup(m_editorLayer, obj2, groupID2);
+			addToGroup(m_editorLayer, obj3, groupID3);
 
 			// Find the x position for the gradient trigger (i think robtop does this by taking the leftmost and rightmost corners and finding the average)
 			 
@@ -80,12 +80,34 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 	static int nextGradientID(LevelEditorLayer* layer) {
 		std::unordered_set<int> checkedGroups;
 		for (auto obj : CCArrayExt<GameObject*>(layer->m_objects)) {
-			if (auto group = typeinfo_cast<GradientTriggerObject*>(obj)) {
+			if (obj->m_objectID == 2903) {
+				auto group = static_cast<GradientTriggerObject*>(obj);
 				checkedGroups.insert(group->m_gradientID);
 			}
 		}
 		int nextID = 1;
 		while (checkedGroups.contains(nextID)) nextID++;
+		return nextID;
+	}
+
+	//Add object to the group (had to do this because addObjectToGroup wasn't building on ios or macos)
+	static void addToGroup(LevelEditorLayer* layer, GameObject* obj, int groupID) {
+		if (obj->addToGroup(groupID) == 1) {
+			layer->addToGroup(obj, groupID, false);
+		}
+	}
+
+	//Find next group ID (had to do this because getNextFreeGroupID wasn't building on ios or macos (wow this has become a recurring pattern))
+	static int nextGroupID(LevelEditorLayer* layer, std::unordered_set<int> const& exclude) {
+		std::unordered_set<int> checkedGroups = exclude;
+		for (auto obj : CCArrayExt<GameObject*>(layer->m_objects)) {
+			if (!obj->m_groups) continue;
+			for (int i = 0; i < obj->m_groupCount; ++i) {
+				checkedGroups.insert((*obj->m_groups)[i]);
+			}
+		}
+		int nextID = 1;
+		while (checkedGroups.contains(nextID) && nextID < 9999) nextID++;
 		return nextID;
 	}
 };
