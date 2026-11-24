@@ -58,7 +58,7 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 			gradientTrigger->setPosition(snappedGradientPosition);
 
 			gradientTrigger->m_vertexMode = true;
-			gradientTrigger->m_gradientID = m_editorLayer->getNextFreeGradientID({});
+			gradientTrigger->m_gradientID = nextGradientID(m_editorLayer);
 			gradientTrigger->m_upBottomLeftID = groupID1;
 			gradientTrigger->m_downBottomRightID = groupID1;
 			gradientTrigger->m_leftTopLeftID = groupID2;
@@ -74,5 +74,18 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 		{
 			EditorUI::createGradientFromSelection();
 		}
+	}
+
+	//Find the next free gradient ID (had to do this because getNextFreeGradientID wasn't building on ios or macos)
+	static int nextGradientID(LevelEditorLayer* layer) {
+		std::unordered_set<int> checkedGroups;
+		for (auto obj : CCArrayExt<GameObject*>(layer->m_objects)) {
+			if (auto group = typeinfo_cast<GradientTriggerObject*>(obj)) {
+				checkedGroups.insert(group->m_gradientID);
+			}
+		}
+		int nextID = 1;
+		while (checkedGroups.contains(nextID)) nextID++;
+		return nextID;
 	}
 };
