@@ -15,5 +15,9 @@
 		"homepage": "https://www.arcadiac.net/",
 		"source": "https://github.com/ArcadiacManiac/Create-Gradient-Plus",
 		"community": "https://discord.gg/6qgzGBBQ4c"
-	}
+	},
+	"tags": [
+		"editor",
+		"enhancement"
+	]
 }
