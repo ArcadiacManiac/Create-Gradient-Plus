@@ -72,9 +72,16 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 		}
 		else if (selected->count() > 3)
 		{
-			// Get a list of the selected objects in the order that they were placed
-			std::unordered_set<GameObject*> selectedObjects;
-			// Use Delauney Triangulation to seperate the shape into triangles
+			// Get a list of the selected objects in the order that they were placed (done using the unique ID for each object)
+			std::vector<GameObject*> selectedObjects;
+			for (int i = 0; i < selected->count(); ++i) {
+				selectedObjects.push_back(static_cast<GameObject*>(selected->objectAtIndex(i)));
+			}
+			std::sort(selectedObjects.begin(), selectedObjects.end(), [](GameObject* object1, GameObject* object2) {
+				return object1->m_uniqueID < object2->m_uniqueID;
+			});
+
+			// Use big math to get triangles
 
 
 			// Create a gradient for each triangle
