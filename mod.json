@@ -1,5 +1,5 @@
 {
-	"geode": "6.0.0-beta.3",
+	"geode": "6.0.0",
 	"gd": {
 		"win": "2.2091",
 		"android": "2.2091",
@@ -8,7 +8,7 @@
 	},
 	"id": "arcadiac.create-gradient-plus",
 	"name": "Create Gradient Plus",
-	"version": "v1.0.0",
+	"version": "v2.0.0",
 	"developer": "Arcadiac",
 	"description": "Extends the functionality of the Create Gradient button to let it create gradients with 3 corners",
 	"links": {

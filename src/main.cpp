@@ -72,7 +72,7 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 		}
 		else if (selected->count() > 3)
 		{
-			// Get a list of the selected objects in the order that they were placed (done using the unique ID for each object)
+			// Get a list of the selected objects in the order that they were placed (done using the unique ID for each object) to get shape of polygon
 			std::vector<GameObject*> selectedObjects;
 			for (int i = 0; i < selected->count(); ++i) {
 				selectedObjects.push_back(static_cast<GameObject*>(selected->objectAtIndex(i)));
@@ -81,7 +81,14 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 				return object1->m_uniqueID < object2->m_uniqueID;
 			});
 
-			// Use big math to get triangles
+			// Apply new group IDs to the objects
+			for (int i = 0; i < selectedObjects.size(); ++i)
+			{
+				addToGroup(m_editorLayer, selectedObjects[i], nextGroupID(m_editorLayer));
+			}
+
+			// Use Delaunay Triangulation and create a list of sets of 3 corners that form valid triangles for the polygon
+			// - 
 
 
 			// Create a gradient for each triangle
@@ -116,6 +123,20 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 	//Find next group ID (had to do this because getNextFreeGroupID wasn't building on ios or macos (wow this has become a recurring pattern))
 	static int nextGroupID(LevelEditorLayer* layer, std::unordered_set<int> const& exclude) {
 		std::unordered_set<int> checkedGroups = exclude;
+		for (auto obj : CCArrayExt<GameObject*>(layer->m_objects)) {
+			if (!obj->m_groups) continue;
+			for (int i = 0; i < obj->m_groupCount; ++i) {
+				checkedGroups.insert((*obj->m_groups)[i]);
+			}
+		}
+		int nextID = 1;
+		while (checkedGroups.contains(nextID) && nextID < 9999) nextID++;
+		return nextID;
+	}
+
+	static int nextGroupID(LevelEditorLayer* layer)
+	{
+		std::unordered_set<int> checkedGroups;
 		for (auto obj : CCArrayExt<GameObject*>(layer->m_objects)) {
 			if (!obj->m_groups) continue;
 			for (int i = 0; i < obj->m_groupCount; ++i) {
