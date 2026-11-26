@@ -18,11 +18,11 @@ class $modify(GradientPlusEditorUI, EditorUI) {
 
 			// Assign new group IDs to the objects and keep them in an unordered_set
 			std::unordered_set<int> gradientGroups;
-			int groupID1 = nextGroupID(m_editorLayer, gradientGroups);
+			int groupID1 = m_editorLayer->getNextFreeGroupID(gradientGroups);
 			gradientGroups.insert(groupID1);
-			int groupID2 = nextGroupID(m_editorLayer, gradientGroups);
+			int groupID2 = m_editorLayer->getNextFreeGroupID(gradientGroups);
 			gradientGroups.insert(groupID2);
-			int groupID3 = nextGroupID(m_editorLayer, gradientGroups);
+			int groupID3 = m_editorLayer->getNextFreeGroupID(gradientGroups);
 			gradientGroups.insert(groupID3);
 
 			addToGroup(m_editorLayer, obj1, groupID1);
